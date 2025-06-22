@@ -8,21 +8,11 @@ document.querySelectorAll('.render-container').forEach(container => {
 
   const frameCache = new Map();
 
-  function throttle(func, limit) {
-    let inThrottle;
-    return function (...args) {
-      if (!inThrottle) {
-        func.apply(this, args);
-        inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
-      }
-    };
-  }
-
   function preloadInitialFrames() {
     for (let i = START_FRAME; i < START_FRAME + PRELOAD_FRAMES && i <= MAX_FRAMES; i++) {
       const id = i.toString().padStart(4, '0');
       const image = new Image();
+      image.loading = 'eager'; // Evita lazy loading
       image.src = `${PATH}/${id}.webp`;
       frameCache.set(id, image);
     }
@@ -31,6 +21,7 @@ document.querySelectorAll('.render-container').forEach(container => {
   function loadFrame(id) {
     if (!frameCache.has(id)) {
       const image = new Image();
+      image.loading = 'eager';
       image.src = `${PATH}/${id}.webp`;
       frameCache.set(id, image);
     }
@@ -48,10 +39,12 @@ document.querySelectorAll('.render-container').forEach(container => {
     return Math.max(0, Math.min(1, progress));
   }
 
-  const updateFrame = throttle(() => {
+  function updateFrame() {
     const scrollFraction = getScrollProgressInContainer();
-    // Calcular el frame actual sumando START_FRAME - 1
-    const frameNum = Math.min(MAX_FRAMES, Math.max(START_FRAME, Math.floor(scrollFraction * (MAX_FRAMES - START_FRAME + 1) + START_FRAME)));
+    const frameNum = Math.min(
+      MAX_FRAMES,
+      Math.max(START_FRAME, Math.floor(scrollFraction * (MAX_FRAMES - START_FRAME + 1) + START_FRAME))
+    );
     const id = frameNum.toString().padStart(4, '0');
     const cachedImage = loadFrame(id);
 
@@ -62,10 +55,22 @@ document.querySelectorAll('.render-container').forEach(container => {
         img.src = cachedImage.src;
       };
     }
-  }, 16);
+  }
 
-  window.addEventListener("scroll", updateFrame);
-  window.addEventListener("resize", updateFrame);
+  // Optimizado con requestAnimationFrame
+  let ticking = false;
+  function onScrollOrResize() {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateFrame();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+
+  window.addEventListener("scroll", onScrollOrResize);
+  window.addEventListener("resize", onScrollOrResize);
   window.addEventListener("load", () => {
     preloadInitialFrames();
     updateFrame();
