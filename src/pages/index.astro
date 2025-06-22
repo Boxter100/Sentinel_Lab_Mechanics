@@ -1,11 +1,18 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import RenderFull from '../components/renderFull.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Prueba from '../components/prueba.astro';
+import Tokyo from '../components/tokyo.astro';
 ---
 
 <Layout>
-	<Welcome />
+	<Prueba />
+	<RenderFull max={350} preload={20} height="300dvh"/>
+	<Prueba />
+	<RenderFull id="2" path="/frames" max={807} preload={20} height="300dvh" startFrame={350}/>
+	<Prueba />
+	<Tokyo   modelPath="/models/tu-modelo.glb"
+  backgroundColor="#eeeeee"
+  modelScale={0.5}
+  cameraPosition={3} />
 </Layout>

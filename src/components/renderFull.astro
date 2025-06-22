@@ -1,0 +1,29 @@
+---
+const { id = "1", path = "/frames", max = 807, preload = 20, height = "300dvh", startFrame = 1 } = Astro.props;
+const startFramePadded = startFrame.toString().padStart(4, '0');
+---
+
+<div
+  class="render-container"
+  style={`height: ${height}`}
+  data-id={id}
+  data-path={path}
+  data-max={max}
+  data-preload={preload}
+  data-start-frame={startFrame}
+>
+  <img id={`render-frame-${id}`} class="render-frame" src={`${path}/${startFramePadded}.webp`} alt="Render" />
+</div>
+
+<style>
+  .render-frame {
+    width: 100vw;
+    height: 100dvh;
+    object-fit: cover;
+    position: sticky;
+    top: 0;
+    background-color: black;
+  }
+</style>
+
+<script type="module" src="/scripts/render.js"></script>
