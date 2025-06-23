@@ -1,18 +1,20 @@
 ---
 import RenderFull from '../components/renderFull.astro';
 import Layout from '../layouts/Layout.astro';
-import Prueba from '../components/prueba.astro';
+import Navbar from '../components/Navbar.astro';
+import InstagramGallery from '../components/InstagramGallery.astro';
+import ShopArea from '../components/ShopArea.astro';
+import Footer from '../components/Footer.astro';
 import Tokyo from '../components/tokyo.astro';
 ---
 
 <Layout>
-	<Prueba />
-	<RenderFull max={500} preload={20} height="300dvh"/>
-	<Prueba />
-	<RenderFull id="2" path="/frames" max={807} preload={20} height="300dvh" startFrame={500}/>
-	<Prueba />
-	<Tokyo   modelPath="/models/tu-modelo.glb"
-  backgroundColor="#eeeeee"
-  modelScale={0.5}
-  cameraPosition={3} />
+  <Navbar />
+  <RenderFull max={500} preload={20} height="300dvh"/>
+  <InstagramGallery />
+  <ShopArea />
+  <RenderFull id="2" path="/frames" max={807} preload={20} height="300dvh" startFrame={500}/>
+  <Tokyo />
+	<Footer />
+
 </Layout>
