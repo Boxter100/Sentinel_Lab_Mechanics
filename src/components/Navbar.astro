@@ -1,42 +1,118 @@
 ---
-// Componente de navegación con estilo Instagram
 ---
 
-<nav class="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
-  <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+<nav class="absolute top-0 z-50 w-full">
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center relative">
     <!-- Logo y nombre -->
     <div class="flex items-center space-x-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-      </svg>
-      <span class="font-bold text-xl">Sentinel Lab</span>
+      <img src="/icon.png" alt="Icono de Sentinel Lab" class="h-10 w-10 object-contain" />
     </div>
     
-    <!-- Menú de navegación -->
-    <div class="hidden md:flex items-center space-x-6">
-      <a href="#" class="text-gray-700 hover:text-black">Inicio</a>
-      <a href="#galeria" class="text-gray-700 hover:text-black">Galería</a>
-      <a href="#comprar" class="text-gray-700 hover:text-black">Comprar</a>
-      <a href="#" class="text-gray-700 hover:text-black">Contacto</a>
+    <!-- Menú de navegación centrado -->
+    <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center space-x-6">
+      <a href="#" class="text-white hover:text-black">Inicio</a>
+      <a href="#galeria" class="text-white hover:text-black">Galería</a>
+      <a href="#comprar" class="text-white hover:text-black">Comprar</a>
+      <a href="#" class="text-white hover:text-black">Contacto</a>
     </div>
     
     <!-- Iconos de acción -->
     <div class="flex items-center space-x-4">
-      <button class="text-gray-700 hover:text-black">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </button>
-      <button class="text-gray-700 hover:text-black">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      </button>
-      <button class="md:hidden text-gray-700 hover:text-black">
+      <button id="mobile-menu-button" class="md:hidden text-white hover:text-black">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
     </div>
   </div>
+  
+  <!-- Menú mobile -->
+  <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-90 z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+    <div class="h-full flex flex-col">
+      <!-- Cabecera del menú mobile -->
+      <div class="flex justify-between items-center p-4 border-b border-gray-800">
+        <img src="/icon.png" alt="Icono de Sentinel Lab" class="h-10 w-10 object-contain" />
+        <button id="close-menu-button" class="text-white hover:text-gray-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Enlaces del menú mobile -->
+      <div class="flex flex-col items-center justify-center flex-grow">
+        <a href="#" class="text-white text-xl py-4 hover:text-gray-300 transition-colors duration-200">Inicio</a>
+        <a href="#galeria" class="text-white text-xl py-4 hover:text-gray-300 transition-colors duration-200">Galería</a>
+        <a href="#comprar" class="text-white text-xl py-4 hover:text-gray-300 transition-colors duration-200">Comprar</a>
+        <a href="#" class="text-white text-xl py-4 hover:text-gray-300 transition-colors duration-200">Contacto</a>
+      </div>
+      
+      <!-- Footer del menú mobile -->
+      <div class="p-6 border-t border-gray-800">
+
+      </div>
+    </div>
+  </div>
 </nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const closeMenuButton = document.getElementById('close-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+    
+    // Función para abrir el menú
+    const openMenu = () => {
+      mobileMenu.classList.remove('translate-x-full');
+      document.body.style.overflow = 'hidden'; // Prevenir scroll
+    };
+    
+    // Función para cerrar el menú
+    const closeMenu = () => {
+      mobileMenu.classList.add('translate-x-full');
+      document.body.style.overflow = ''; // Restaurar scroll
+    };
+    
+    // Eventos para abrir/cerrar el menú
+    mobileMenuButton.addEventListener('click', openMenu);
+    closeMenuButton.addEventListener('click', closeMenu);
+    
+    // Cerrar menú al hacer clic en un enlace
+    mobileMenuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        closeMenu();
+        
+        // Si el enlace es un ancla en la misma página, hacer scroll suave
+        const href = link.getAttribute('href');
+        if (href.startsWith('#') && href.length > 1) {
+          const targetElement = document.querySelector(href);
+          if (targetElement) {
+            setTimeout(() => {
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+            }, 300); // Pequeño retraso para permitir que el menú se cierre primero
+          }
+        }
+      });
+    });
+    
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', (event) => {
+      if (
+        !mobileMenu.classList.contains('translate-x-full') && // Menú está abierto
+        !mobileMenu.contains(event.target) && // Clic no fue dentro del menú
+        event.target !== mobileMenuButton && // Clic no fue en el botón de abrir
+        !mobileMenuButton.contains(event.target) // Clic no fue en un hijo del botón
+      ) {
+        closeMenu();
+      }
+    });
+    
+    // Cerrar menú al presionar Escape
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !mobileMenu.classList.contains('translate-x-full')) {
+        closeMenu();
+      }
+    });
+  });
+</script>

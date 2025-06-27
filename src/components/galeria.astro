@@ -1,0 +1,204 @@
+---
+import Contenedor from '../components/contenedorInsta.astro';
+
+// Datos para los posts de Instagram
+const posts = [
+  {
+    imagen: "/gabinete1.webp",
+    likes: 128,
+    descripcion: "Gabinete estándar en color blanco, perfecto para cualquier espacio. #gabinete #diseño",
+    comentarios: 24,
+    diasPublicado: 2
+  },
+  {
+    imagen: "/gabinete2.webp",
+    likes: 156,
+    descripcion: "Modelo premium con acabados de alta calidad. Ideal para espacios modernos. #premium #moderno",
+    comentarios: 32,
+    diasPublicado: 1
+  },
+  {
+    imagen: "/gabinete3.webp",
+    likes: 203,
+    descripcion: "Diseño minimalista que se adapta a cualquier decoración. #minimalista #versatil",
+    comentarios: 41,
+    diasPublicado: 3
+  },
+  {
+    imagen: "/frames/0150.webp",
+    likes: 187,
+    descripcion: "Gabinete con espacio optimizado para almacenamiento. #organización #espacio",
+    comentarios: 19,
+    diasPublicado: 4
+  },
+  {
+    imagen: "/frames/0200.webp",
+    likes: 245,
+    descripcion: "Nuestro modelo más vendido ahora disponible en nuevos colores. #bestseller #nuevoscolores",
+    comentarios: 53,
+    diasPublicado: 1
+  },
+  {
+    imagen: "/frames/0250.webp",
+    likes: 176,
+    descripcion: "Edición especial con detalles personalizables. Contáctanos para más información. #personalizado #exclusivo",
+    comentarios: 28,
+    diasPublicado: 2
+  }
+];
+---
+
+<section id="galeria" class="py-16 bg-gradient-to-b from-gray-50 to-gray-100">
+  <div class="container mx-auto px-4">
+    <div class="mb-8 text-center">
+      <h2 class="text-3xl font-bold mb-2">Nuestra Galería</h2>
+      <p class="text-gray-600 mb-4">Explora nuestros diseños de gabinetes</p>
+      
+      <div class="flex justify-center items-center gap-4">
+        <!-- Botón de nombre -->
+        <a href="https://www.instagram.com/sentinel_lab_mechanical/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition-all duration-300 shadow-md hover:shadow-lg">
+          Sentinel Lab Mechanics +
+        </a>
+    
+      </div>
+    </div>
+    
+    
+    <!-- Controles de navegación del carrusel para desktop -->
+    <div class="hidden md:flex justify-between items-center mb-6">
+      <button id="prev-btn" class="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button id="next-btn" class="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Contenedor del carrusel -->
+    <div class="relative overflow-hidden">
+      <div id="carousel" class="flex transition-transform duration-500 ease-in-out space-x-4">
+        {posts.map((post) => (
+          <div class="carousel-item flex-shrink-0 w-full md:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)]">
+            <Contenedor 
+              imagen={post.imagen} 
+              likes={post.likes} 
+              descripcion={post.descripcion} 
+              comentarios={post.comentarios} 
+              diasPublicado={post.diasPublicado} 
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Indicadores de paginación para móvil -->
+    <div class="flex justify-center mt-6 space-x-2">
+      {posts.map((_, index) => (
+        <button class="pagination-dot h-2 w-2 rounded-full bg-gray-300 hover:bg-gray-500 transition-colors duration-200" data-index={index}></button>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Script para el funcionamiento del carrusel
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.getElementById('carousel');
+    const items = document.querySelectorAll('.carousel-item');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const dots = document.querySelectorAll('.pagination-dot');
+    
+    let currentIndex = 0;
+    const totalItems = items.length;
+    let itemsPerView = getItemsPerView();
+    let maxIndex = Math.max(0, totalItems - itemsPerView);
+    
+    // Función para determinar cuántos elementos mostrar según el ancho de la pantalla
+    function getItemsPerView() {
+      if (window.innerWidth >= 1024) return 3; // lg
+      if (window.innerWidth >= 768) return 2; // md
+      return 1; // móvil
+    }
+    
+    // Actualizar el carrusel
+    function updateCarousel() {
+      const itemWidth = items[0].offsetWidth;
+      const gap = 16; // 1rem = 16px (espacio entre elementos)
+      const offset = currentIndex * (itemWidth + gap);
+      carousel.style.transform = `translateX(-${offset}px)`;
+      
+      // Actualizar estado de los dots
+      dots.forEach((dot, index) => {
+        if (index === currentIndex) {
+          dot.classList.add('bg-gray-800');
+          dot.classList.remove('bg-gray-300');
+        } else {
+          dot.classList.add('bg-gray-300');
+          dot.classList.remove('bg-gray-800');
+        }
+      });
+    }
+    
+    // Event listeners para los botones
+    prevBtn.addEventListener('click', () => {
+      currentIndex = Math.max(0, currentIndex - 1);
+      updateCarousel();
+    });
+    
+    nextBtn.addEventListener('click', () => {
+      currentIndex = Math.min(maxIndex, currentIndex + 1);
+      updateCarousel();
+    });
+    
+    // Event listeners para los dots
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        currentIndex = Math.min(maxIndex, index);
+        updateCarousel();
+      });
+    });
+    
+    // Actualizar en cambio de tamaño de ventana
+    window.addEventListener('resize', () => {
+      itemsPerView = getItemsPerView();
+      maxIndex = Math.max(0, totalItems - itemsPerView);
+      currentIndex = Math.min(currentIndex, maxIndex);
+      updateCarousel();
+    });
+    
+    // Inicializar
+    updateCarousel();
+    
+    // Soporte para gestos táctiles en móvil
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    carousel.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+    
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      if (touchEndX < touchStartX - swipeThreshold) {
+        // Deslizar a la izquierda
+        currentIndex = Math.min(maxIndex, currentIndex + 1);
+        updateCarousel();
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        // Deslizar a la derecha
+        currentIndex = Math.max(0, currentIndex - 1);
+        updateCarousel();
+      }
+    }
+  });
+</script>

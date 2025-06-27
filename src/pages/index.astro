@@ -2,7 +2,7 @@
 import RenderFull from '../components/renderFull.astro';
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
-import InstagramGallery from '../components/InstagramGallery.astro';
+import Galeria from '../components/galeria.astro';
 import ShopArea from '../components/ShopArea.astro';
 import Footer from '../components/Footer.astro';
 import RitaRender from '../components/ritaRender.jsx';
@@ -11,9 +11,9 @@ import RitaRender from '../components/ritaRender.jsx';
 <Layout>
   <Navbar />
   <RenderFull max={403} preload={403} height="300dvh"/>
-  <InstagramGallery />
+  <Galeria />
   <ShopArea />
   <RenderFull id="2" path="/frames" max={807} preload={403} height="300dvh" startFrame={403}/>
-  <RitaRender client:only="react" modelPath="/models/rita5.glb" background="#f0f0f0" />
+  <RitaRender client:only="react" modelPath="/models/cristal.glb" background="#f0f0f0" />
 	<Footer />
 </Layout>
