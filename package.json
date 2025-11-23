@@ -9,16 +9,20 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@nanostores/react": "^1.0.0",
     "@react-three/drei": "^10.3.0",
     "@react-three/fiber": "^9.1.2",
     "@tailwindcss/vite": "^4.1.10",
     "astro": "^5.9.4",
+    "nanostores": "^1.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.10",
     "three": "^0.177.0"
   },
   "devDependencies": {
-    "@astrojs/react": "^4.3.0"
+    "@astrojs/react": "^4.3.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2"
   }
 }

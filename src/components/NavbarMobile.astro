@@ -1,0 +1,243 @@
+---
+
+---
+
+<nav class="navbar-mobile fixed top-0 z-50 w-full md:hidden transition-all duration-300" aria-label="Navegación móvil">
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- Logo y nombre -->
+    <div class="flex items-center space-x-2 logo-container">
+      <a href="/" aria-label="Ir al inicio">
+        <img src="/icon.png" alt="Sentinel Lab" class="h-10 w-10 object-contain logo-img" />
+      </a>
+    </div>
+    
+    <!-- Botón hamburguesa -->
+    <div class="flex items-center">
+      <button 
+        id="mobile-menu-button" 
+        class="text-white hover:text-white/80 transition-colors duration-200"
+        aria-label="Abrir menú de navegación"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Menú mobile fullscreen -->
+  <div 
+    id="mobile-menu" 
+    class="fixed inset-0 h-screen w-screen bg-black z-[60] transform translate-x-full transition-transform duration-300 ease-in-out"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Menú de navegación móvil"
+    style="height: 100dvh;"
+  >
+    <div class="h-full w-full flex flex-col bg-black">
+      <!-- Cabecera del menú mobile -->
+      <div class="flex justify-between items-center p-4 border-b border-gray-800">
+        <img src="/icon.png" alt="Sentinel Lab" class="h-10 w-10 object-contain" />
+        <button 
+          id="close-menu-button" 
+          class="text-white hover:text-gray-300 transition-colors duration-200"
+          aria-label="Cerrar menú de navegación"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Enlaces del menú mobile -->
+      <nav class="flex flex-col items-center justify-center flex-grow" aria-label="Menú móvil">
+        <a href="#hero" class="text-white text-2xl py-5 hover:text-gray-300 transition-all duration-200 hover:scale-105">Inicio</a>
+        <a href="#galeria" class="text-white text-2xl py-5 hover:text-gray-300 transition-all duration-200 hover:scale-105">Galería</a>
+        <a href="#comprar" class="text-white text-2xl py-5 hover:text-gray-300 transition-all duration-200 hover:scale-105">Comprar</a>
+        <a href="#modelo" class="text-white text-2xl py-5 hover:text-gray-300 transition-all duration-200 hover:scale-105">Modelo 3D</a>
+      </nav>
+      
+      <!-- Footer del menú mobile (opcional) -->
+      <div class="p-6 border-t border-gray-800 text-center">
+        <p class="text-white/60 text-sm">© 2024 Sentinel Lab</p>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  /* Estado inicial del navbar mobile */
+  .navbar-mobile {
+    animation: slideDown 0.6s ease-out both;
+    backdrop-filter: blur(0px);
+    background-color: transparent;
+    transition: transform 300ms ease, opacity 300ms ease, backdrop-filter 300ms ease, background-color 300ms ease, box-shadow 300ms ease;
+    will-change: transform, opacity;
+  }
+
+  /* Estado con glassmorphism cuando hay scroll */
+  .navbar-mobile.scrolled {
+    backdrop-filter: blur(12px) saturate(180%);
+    background-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Ocultar navbar al hacer scroll down */
+  .navbar-mobile.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Animación del logo */
+  .logo-img {
+    transition: transform 0.3s ease;
+  }
+
+  .logo-container:hover .logo-img {
+    transform: rotate(360deg) scale(1.1);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const navbar = document.querySelector('.navbar-mobile');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const closeMenuButton = document.getElementById('close-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuLinks = mobileMenu?.querySelectorAll('a');
+    
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    
+    // Control de scroll para hide/show navbar
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (!navbar) return;
+      
+      // Agregar glassmorphism después de 50px de scroll
+      if (currentScrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      // Hide/show navbar basado en dirección del scroll
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scroll down - ocultar navbar
+        navbar.classList.add('hidden');
+      } else {
+        // Scroll up - mostrar navbar
+        navbar.classList.remove('hidden');
+      }
+      
+      lastScrollY = currentScrollY;
+      ticking = false;
+    };
+    
+    // Optimización con requestAnimationFrame
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
+    
+    if (!mobileMenuButton || !closeMenuButton || !mobileMenu) {
+      console.error('No se encontraron elementos del menú móvil');
+      return;
+    }
+    
+    // Función para abrir el menú
+    const openMenu = () => {
+      mobileMenu.classList.remove('translate-x-full');
+      mobileMenuButton.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      closeMenuButton.focus();
+    };
+    
+    // Función para cerrar el menú
+    const closeMenu = () => {
+      mobileMenu.classList.add('translate-x-full');
+      mobileMenuButton.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      mobileMenuButton.focus();
+    };
+    
+    // Eventos para abrir/cerrar el menú
+    mobileMenuButton.addEventListener('click', openMenu);
+    closeMenuButton.addEventListener('click', closeMenu);
+    
+    // Cerrar menú al hacer clic en un enlace
+    mobileMenuLinks?.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        
+        if (href && href.startsWith('#') && href.length > 1) {
+          e.preventDefault();
+          closeMenu();
+          
+          const targetElement = document.querySelector(href);
+          if (targetElement) {
+            setTimeout(() => {
+              targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              history.pushState(null, '', href);
+            }, 300);
+          }
+        } else {
+          closeMenu();
+        }
+      });
+    });
+    
+    // Cerrar menú al hacer clic fuera
+    mobileMenu.addEventListener('click', (event) => {
+      if (event.target === mobileMenu) {
+        closeMenu();
+      }
+    });
+    
+    // Cerrar menú al presionar Escape
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !mobileMenu.classList.contains('translate-x-full')) {
+        closeMenu();
+      }
+    });
+    
+    // Trap focus dentro del menú móvil cuando está abierto
+    mobileMenu.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') {
+        const focusableElements = mobileMenu.querySelectorAll(
+          'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = /** @type {HTMLElement} */ (focusableElements[0]);
+        const lastElement = /** @type {HTMLElement} */ (focusableElements[focusableElements.length - 1]);
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
+      }
+    });
+  });
+</script>

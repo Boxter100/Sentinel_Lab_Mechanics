@@ -1,19 +1,23 @@
 ---
-import RenderFull from '../components/renderFull.astro';
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
 import Galeria from '../components/galeria.astro';
-import ShopArea from '../components/ShopArea.astro';
+import Comprar from '../components/Comprar.astro';
+import Modelo from '../components/Modelo.astro';
 import Footer from '../components/Footer.astro';
-import RitaRender from '../components/ritaRender.jsx';
+import FloatingCart from '../components/FloatingCart.jsx';
+import Navbar from '../components/Navbar.jsx';
+import NavbarMobile from '../components/NavbarMobile.astro';
 ---
 
+
 <Layout>
-  <Navbar />
-  <RenderFull max={403} preload={403} height="300dvh"/>
+  <Navbar client:load/>
+  <NavbarMobile />
+  <Hero />
   <Galeria />
-  <ShopArea />
-  <RenderFull id="2" path="/frames" max={807} preload={403} height="300dvh" startFrame={403}/>
-  <RitaRender client:only="react" modelPath="/models/cristal.glb" background="#f0f0f0" />
+  <Comprar />
+  <Modelo />  
 	<Footer />
+  <FloatingCart client:load />
 </Layout>
