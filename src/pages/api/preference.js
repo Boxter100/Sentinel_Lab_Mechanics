@@ -1,36 +1,35 @@
 export const prerender = false;
 
-import { MercadoPagoConfig, Preference } from 'mercadopago';
+import Stripe from "stripe";
+const stripe = new Stripe(import.meta.env.STRIPE_SECRET_KEY);
 
 export async function POST({ request }) {
   try {
-    console.log('[DEBUG] SITE en backend:', import.meta.env.SITE);
-    const { items } = await request.json(); // recibe array completo
+    const { items } = await request.json();
 
-    const client = new MercadoPagoConfig({
-      accessToken: import.meta.env.MP_ACCESS_TOKEN,
-    });
-
-    const preference = await new Preference(client).create({
-      body: {
-        items, // ya es un array de productos
-        back_urls: {
-          success: `${import.meta.env.SITE}/success`,
-          failure: `${import.meta.env.SITE}/failure`,
-          pending: `${import.meta.env.SITE}/pending`
-        },
-        auto_return: 'approved',
+    // convertir tus items a line_items de stripe
+    const line_items = items.map(item => ({
+      price_data: {
+        currency: "mxn",
+        product_data: { name: item.title },
+        unit_amount: item.unit_price * 100, // Stripe maneja centavos
       },
+      quantity: item.quantity,
+    }));
+
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      line_items,
+      success_url: `${import.meta.env.SITE}/success`,
+      cancel_url: `${import.meta.env.SITE}/cancel`,
     });
 
-    //console.log('Preferencia creada:', preference);  // Agrega este log para verificar la preferencia creada
-
-    return new Response(JSON.stringify({ initPoint: preference.init_point }), {
+    return new Response(JSON.stringify({ url: session.url }), {
       status: 200,
     });
 
   } catch (error) {
-    console.error('[BACKEND] Error al crear preferencia:', error);
+    console.error("[STRIPE ERROR]", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
     });
